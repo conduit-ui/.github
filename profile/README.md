@@ -88,7 +88,7 @@ Perfect for:
 
 Open issues on package repos. PRs welcome.
 
-For enterprise support or custom packages: jordan.l.partridge@gmail.com
+For enterprise support or custom packages: jordan@partridge.rocks
 
 ---
 
