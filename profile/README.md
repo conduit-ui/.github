@@ -1,32 +1,33 @@
 # Conduit
 
-> **Production-grade GitHub API connectors with 100% test coverage**
+> **GitHub API connectors that work exactly as documented. No surprises. No exceptions.**
 
 [![Sentinel Certified](https://img.shields.io/badge/Sentinel-Certified-brightgreen?style=flat-square)](https://github.com/synapse-sentinel/gate)
 
-## What is Conduit?
+## The Standard
 
-Conduit is an ecosystem of PHP packages for GitHub API integration. Each package is:
+Every certified Conduit package:
+- **Works as documented** - No hidden behaviors or edge cases
+- **100% test coverage** - Every line proven correct
+- **Fails fast** - Typed exceptions, not silent errors
+- **Auto-verified** - PRs merge only when Sentinel certifies
 
-- **100% test coverage** - Every line tested
-- **Sentinel Certified** - Automated quality gates enforce standards
-- **Type-safe** - Full PHP 8.2+ type coverage
-- **Production-ready** - Used in real applications
+Packages without the Sentinel badge are in active development.
 
 ## Ecosystem
 
 | Package | Purpose | Status |
 |---------|---------|--------|
-| [connector](https://github.com/conduit-ui/connector) | HTTP transport layer with typed exceptions | [![Sentinel](https://img.shields.io/github/actions/workflow/status/conduit-ui/connector/gate.yml?label=Sentinel&style=flat-square)](https://github.com/conduit-ui/connector/actions/workflows/gate.yml) |
-| [issue](https://github.com/conduit-ui/issue) | Issue management (CRUD, labels, assignees, milestones) | [![Sentinel](https://img.shields.io/github/actions/workflow/status/conduit-ui/issue/gate.yml?label=Sentinel&style=flat-square)](https://github.com/conduit-ui/issue/actions/workflows/gate.yml) |
-| [pr](https://github.com/conduit-ui/pr) | Pull request operations (review, merge, query) | [![Sentinel](https://img.shields.io/github/actions/workflow/status/conduit-ui/pr/gate.yml?label=Sentinel&style=flat-square)](https://github.com/conduit-ui/pr/actions/workflows/gate.yml) |
-| [repo](https://github.com/conduit-ui/repo) | Repository management | Coming soon |
-| [action](https://github.com/conduit-ui/action) | GitHub Actions integration | Coming soon |
-| [commit](https://github.com/conduit-ui/commit) | Commit operations | Coming soon |
+| [connector](https://github.com/conduit-ui/connector) | HTTP transport, typed exceptions | [![Sentinel](https://img.shields.io/github/actions/workflow/status/conduit-ui/connector/gate.yml?label=Sentinel&style=flat-square)](https://github.com/conduit-ui/connector/actions/workflows/gate.yml) |
+| [issue](https://github.com/conduit-ui/issue) | Issue CRUD, labels, milestones | [![Sentinel](https://img.shields.io/github/actions/workflow/status/conduit-ui/issue/gate.yml?label=Sentinel&style=flat-square)](https://github.com/conduit-ui/issue/actions/workflows/gate.yml) |
+| [pr](https://github.com/conduit-ui/pr) | PR review, merge, query | [![Sentinel](https://img.shields.io/github/actions/workflow/status/conduit-ui/pr/gate.yml?label=Sentinel&style=flat-square)](https://github.com/conduit-ui/pr/actions/workflows/gate.yml) |
+| [repo](https://github.com/conduit-ui/repo) | Repository management | ![Building](https://img.shields.io/badge/status-building-yellow?style=flat-square) |
+| [commit](https://github.com/conduit-ui/commit) | Commit operations | ![Planned](https://img.shields.io/badge/status-planned-lightgrey?style=flat-square) |
+| [action](https://github.com/conduit-ui/action) | GitHub Actions integration | ![Planned](https://img.shields.io/badge/status-planned-lightgrey?style=flat-square) |
 
-## Quality Standards
+## Quality Gates
 
-Every package in the Conduit ecosystem passes **Synapse Sentinel** certification:
+Every package passes **Synapse Sentinel** certification:
 
 ```
 ✓ Tests & Coverage (100% threshold)
@@ -35,30 +36,22 @@ Every package in the Conduit ecosystem passes **Synapse Sentinel** certification
 ✓ Static Analysis (PHPStan level 8)
 ```
 
-PRs automatically merge when certification passes. No exceptions.
-
-## Installation
-
-```bash
-# Core connector (required)
-composer require conduit-ui/connector
-
-# Add packages as needed
-composer require conduit-ui/issue
-composer require conduit-ui/pr
-```
+PRs auto-merge when certification passes. No exceptions.
 
 ## Quick Start
+
+```bash
+composer require conduit-ui/connector conduit-ui/issue
+```
 
 ```php
 use ConduitUI\Connector\Connector;
 use ConduitUI\Issue\IssuesService;
 
-// Initialize
 $connector = new Connector(env('GITHUB_TOKEN'));
 $issues = new IssuesService($connector);
 
-// Use
+// Every method works exactly as documented
 $issue = $issues->get('owner', 'repo', 123);
 $issues->addLabels('owner', 'repo', 123, ['bug', 'priority-high']);
 $issues->close('owner', 'repo', 123);
@@ -78,10 +71,6 @@ $issues->close('owner', 'repo', 123);
 └─────────────────────────────────────────────────────┘
 ```
 
-- **connector**: Authentication, rate limiting, typed exceptions
-- **Domain packages**: Clean APIs for specific GitHub resources
-- **Saloon**: Battle-tested HTTP client underneath
-
 ## Requirements
 
 - PHP 8.2+
@@ -98,7 +87,7 @@ $issues->close('owner', 'repo', 123);
 
 Open issues on package repos. PRs welcome.
 
-For enterprise support: jordan@partridge.rocks
+Enterprise support: jordan@partridge.rocks
 
 ## License
 
