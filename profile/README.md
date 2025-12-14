@@ -1,95 +1,94 @@
 # Conduit
 
-**GitHub automation that actually works.**
+> **GitHub API connectors that work exactly as documented. No surprises. No exceptions.**
 
-Composable PHP packages built for AI agents. Each package is a single verb: `issue`, `pr`, `commit`, `repo`, `action`. Chain them together to build autonomous GitHub workflows that don't break.
+[![Sentinel Certified](https://img.shields.io/badge/Sentinel-Certified-brightgreen?style=flat-square)](https://github.com/synapse-sentinel/gate)
 
-## The Ecosystem
+## The Standard
 
-| Package | What It Does | Install |
-|---------|--------------|---------|
-| [connector](https://github.com/conduit-ui/connector) | HTTP foundation layer (Saloon) | `composer require conduit-ui/connector` |
-| [issue](https://github.com/conduit-ui/issue) | Create, update, close issues | `composer require conduit-ui/issue` |
-| [pr](https://github.com/conduit-ui/pr) | Manage pull requests | `composer require conduit-ui/pr` |
-| [commit](https://github.com/conduit-ui/commit) | Work with commit history | `composer require conduit-ui/commit` |
-| [repo](https://github.com/conduit-ui/repo) | Repository governance | `composer require conduit-ui/repo` |
-| [action](https://github.com/conduit-ui/action) | Trigger GitHub Actions | `composer require conduit-ui/action` |
-| [review](https://github.com/conduit-ui/review) | Code review automation | `composer require conduit-ui/review` |
-| [know](https://github.com/conduit-ui/know) | Agent domain knowledge | `composer require conduit-ui/know` |
+Every certified Conduit package:
+- **Works as documented** - No hidden behaviors or edge cases
+- **100% test coverage** - Every line proven correct
+- **Fails fast** - Typed exceptions, not silent errors
+- **Auto-verified** - PRs merge only when Sentinel certifies
+
+Packages without the Sentinel badge are in active development.
+
+## Ecosystem
+
+| Package | Purpose | Status |
+|---------|---------|--------|
+| [connector](https://github.com/conduit-ui/connector) | HTTP transport, typed exceptions | [![Sentinel](https://img.shields.io/github/actions/workflow/status/conduit-ui/connector/gate.yml?label=Sentinel&style=flat-square)](https://github.com/conduit-ui/connector/actions/workflows/gate.yml) |
+| [issue](https://github.com/conduit-ui/issue) | Issue CRUD, labels, milestones | [![Sentinel](https://img.shields.io/github/actions/workflow/status/conduit-ui/issue/gate.yml?label=Sentinel&style=flat-square)](https://github.com/conduit-ui/issue/actions/workflows/gate.yml) |
+| [pr](https://github.com/conduit-ui/pr) | PR review, merge, query | [![Sentinel](https://img.shields.io/github/actions/workflow/status/conduit-ui/pr/gate.yml?label=Sentinel&style=flat-square)](https://github.com/conduit-ui/pr/actions/workflows/gate.yml) |
+| [repo](https://github.com/conduit-ui/repo) | Repository management | ![Building](https://img.shields.io/badge/status-building-yellow?style=flat-square) |
+| [commit](https://github.com/conduit-ui/commit) | Commit operations | ![Planned](https://img.shields.io/badge/status-planned-lightgrey?style=flat-square) |
+| [action](https://github.com/conduit-ui/action) | GitHub Actions integration | ![Planned](https://img.shields.io/badge/status-planned-lightgrey?style=flat-square) |
+
+## Quality Gates
+
+Every package passes **Synapse Sentinel** certification:
+
+```
+✓ Tests & Coverage (100% threshold)
+✓ Security Audit (no vulnerabilities)
+✓ Pest Syntax (describe/it blocks)
+✓ Static Analysis (PHPStan level 8)
+```
+
+PRs auto-merge when certification passes. No exceptions.
 
 ## Quick Start
 
-```php
-use ConduitUi\GitHubConnector\Connector;
-use ConduitUi\Issue\IssueResource;
-
-// Connect
-$connector = new Connector(token: 'ghp_...');
-
-// Create issue
-$issue = new IssueResource($connector);
-$issue->create('owner/repo', [
-    'title' => 'Bug found by agent',
-    'body' => 'Details...',
-    'labels' => ['bug', 'agent-created']
-]);
+```bash
+composer require conduit-ui/connector conduit-ui/issue
 ```
 
-Each package is:
-- **Minimal** - One responsibility
-- **Composable** - Mix and match
-- **Type-safe** - Full PHP 8.2+ typing
-- **Tested** - Pest coverage
+```php
+use ConduitUI\Connector\Connector;
+use ConduitUI\Issue\IssuesService;
 
-## Built for Agents
+$connector = new Connector(env('GITHUB_TOKEN'));
+$issues = new IssuesService($connector);
 
-Human developers use GitHub's UI. AI agents need programmatic interfaces.
-
-Conduit gives agents structured, deterministic access to GitHub. Same input, same output. No surprises.
-
-Perfect for:
-- Autonomous issue triaging
-- Automated PR workflows
-- Repository governance bots
-- GitHub Actions orchestration
-- Code review automation
+// Every method works exactly as documented
+$issue = $issues->get('owner', 'repo', 123);
+$issues->addLabels('owner', 'repo', 123, ['bug', 'priority-high']);
+$issues->close('owner', 'repo', 123);
+```
 
 ## Architecture
 
 ```
-┌─────────────┐
-│  Your Agent │
-└──────┬──────┘
-       │
-       ↓
-┌─────────────────────────────────────┐
-│  Conduit Packages (issue/pr/etc)    │
-└──────────────┬──────────────────────┘
-               │
-               ↓
-       ┌──────────────┐
-       │  Connector   │  ← Saloon HTTP
-       └──────┬───────┘
-              │
-              ↓
-      ┌──────────────┐
-      │  GitHub API  │
-      └──────────────┘
+┌─────────────────────────────────────────────────────┐
+│                   Your Application                   │
+├─────────────────────────────────────────────────────┤
+│  issue   │   pr    │   repo   │  action  │  commit  │
+├─────────────────────────────────────────────────────┤
+│                    connector                         │
+├─────────────────────────────────────────────────────┤
+│                  Saloon HTTP Client                  │
+└─────────────────────────────────────────────────────┘
 ```
 
-## Philosophy
+## Requirements
 
-- **Singular**: One word, one purpose
-- **Deterministic**: Predictable behavior
-- **Agent-first**: Built for automation
-- **No magic**: Explicit over implicit
+- PHP 8.2+
+- GitHub personal access token
+
+## Contributing
+
+1. Fork the relevant package
+2. Write tests first (100% coverage required)
+3. Implement your changes
+4. PR auto-merges when Sentinel certifies
 
 ## Support
 
 Open issues on package repos. PRs welcome.
 
-For enterprise support or custom packages: jordan@partridge.rocks
+Enterprise support: jordan@partridge.rocks
 
----
+## License
 
-*Part of [THE SHIT](https://github.com/the-shit) - Developer tools that don't suck.*
+MIT
