@@ -1,95 +1,86 @@
 # Conduit
 
-**GitHub automation that actually works.**
+**Agent-native GitHub automation built on PHP.**
 
-Composable PHP packages built for AI agents. Each package is a single verb: `issue`, `pr`, `commit`, `repo`, `action`. Chain them together to build autonomous GitHub workflows that don't break.
-
-## The Ecosystem
-
-| Package | What It Does | Install |
-|---------|--------------|---------|
-| [connector](https://github.com/conduit-ui/connector) | HTTP foundation layer (Saloon) | `composer require conduit-ui/connector` |
-| [issue](https://github.com/conduit-ui/issue) | Create, update, close issues | `composer require conduit-ui/issue` |
-| [pr](https://github.com/conduit-ui/pr) | Manage pull requests | `composer require conduit-ui/pr` |
-| [commit](https://github.com/conduit-ui/commit) | Work with commit history | `composer require conduit-ui/commit` |
-| [repo](https://github.com/conduit-ui/repo) | Repository governance | `composer require conduit-ui/repo` |
-| [action](https://github.com/conduit-ui/action) | Trigger GitHub Actions | `composer require conduit-ui/action` |
-| [review](https://github.com/conduit-ui/review) | Code review automation | `composer require conduit-ui/review` |
-| [know](https://github.com/conduit-ui/know) | Agent domain knowledge | `composer require conduit-ui/know` |
-
-## Quick Start
-
-```php
-use ConduitUi\GitHubConnector\Connector;
-use ConduitUi\Issue\IssueResource;
-
-// Connect
-$connector = new Connector(token: 'ghp_...');
-
-// Create issue
-$issue = new IssueResource($connector);
-$issue->create('owner/repo', [
-    'title' => 'Bug found by agent',
-    'body' => 'Details...',
-    'labels' => ['bug', 'agent-created']
-]);
-```
-
-Each package is:
-- **Minimal** - One responsibility
-- **Composable** - Mix and match
-- **Type-safe** - Full PHP 8.2+ typing
-- **Tested** - Pest coverage
-
-## Built for Agents
-
-Human developers use GitHub's UI. AI agents need programmatic interfaces.
-
-Conduit gives agents structured, deterministic access to GitHub. Same input, same output. No surprises.
-
-Perfect for:
-- Autonomous issue triaging
-- Automated PR workflows
-- Repository governance bots
-- GitHub Actions orchestration
-- Code review automation
+Typed Saloon connectors, Laravel Zero CLIs, and AI-powered workflows. Built for autonomous agents that need deterministic, testable access to GitHub.
 
 ## Architecture
 
 ```
-┌─────────────┐
-│  Your Agent │
-└──────┬──────┘
-       │
-       ↓
-┌─────────────────────────────────────┐
-│  Conduit Packages (issue/pr/etc)    │
-└──────────────┬──────────────────────┘
+┌─────────────────────────────────────────┐
+│  Agents (triage-agent, agentctl, etc.)  │
+└──────────────┬──────────────────────────┘
                │
-               ↓
-       ┌──────────────┐
-       │  Connector   │  ← Saloon HTTP
-       └──────┬───────┘
-              │
-              ↓
-      ┌──────────────┐
-      │  GitHub API  │
-      └──────────────┘
+       ┌───────┴────────┐
+       │   CLI Layer     │  ← Laravel Zero
+       │  issue-cli      │
+       │  pr-cli         │
+       │  commit-cli     │
+       └───────┬─────────┘
+               │
+       ┌───────┴────────┐
+       │  Domain Layer   │  ← Typed resources
+       │  issue / pr     │
+       │  commit / repo  │
+       └───────┬─────────┘
+               │
+       ┌───────┴────────┐
+       │  Connector      │  ← Saloon HTTP
+       └───────┬─────────┘
+               │
+       ┌───────┴────────┐
+       │  GitHub API     │
+       └────────────────┘
 ```
+
+## Packages
+
+### API Foundation
+| Package | Description |
+|---------|-------------|
+| [connector](https://github.com/conduit-ui/connector) | Saloon-based GitHub API client |
+| [contracts](https://github.com/conduit-ui/contracts) | Shared value objects and interfaces |
+
+### Domain Layer
+| Package | Description |
+|---------|-------------|
+| [issue](https://github.com/conduit-ui/issue) | GitHub issue management |
+| [pr](https://github.com/conduit-ui/pr) | Pull request management |
+| [commit](https://github.com/conduit-ui/commit) | Commit history and management |
+| [repo](https://github.com/conduit-ui/repo) | Repository governance |
+
+### CLI Tools
+| Package | Description |
+|---------|-------------|
+| [issue-cli](https://github.com/conduit-ui/issue-cli) | Issue management CLI |
+| [pr-cli](https://github.com/conduit-ui/pr-cli) | PR management CLI |
+| [commit-cli](https://github.com/conduit-ui/commit-cli) | Commit management CLI |
+
+### Knowledge & Intelligence
+| Package | Description |
+|---------|-------------|
+| [knowledge](https://github.com/conduit-ui/knowledge) | AI-powered knowledge base with semantic search and Qdrant |
+| [know-plugin](https://github.com/conduit-ui/know-plugin) | Claude Code plugin for knowledge capture |
+| [qdrant-tools](https://github.com/conduit-ui/qdrant-tools) | CLI tools for Qdrant vector database |
+
+### Infrastructure
+| Package | Description |
+|---------|-------------|
+| [monitor](https://github.com/conduit-ui/monitor) | System health monitoring |
+| [cloudflare](https://github.com/conduit-ui/cloudflare) | Cloudflare tunnel and DNS management |
+| [marketplace](https://github.com/conduit-ui/marketplace) | Claude Code plugins marketplace |
+
+## Stack
+
+- **PHP 8.2+** with full type coverage
+- **Saloon** for HTTP client foundation
+- **Laravel Zero** for CLI applications
+- **Pest** for BDD-style testing
+- **Prism** for AI integration (Ollama, OpenRouter)
 
 ## Philosophy
 
-- **Singular**: One word, one purpose
-- **Deterministic**: Predictable behavior
-- **Agent-first**: Built for automation
-- **No magic**: Explicit over implicit
-
-## Support
-
-Open issues on package repos. PRs welcome.
-
-For enterprise support or custom packages: jordan@partridge.rocks
-
----
-
-*Part of [THE SHIT](https://github.com/the-shit) - Developer tools that don't suck.*
+- **Agent-first**: Built for automation, not humans clicking buttons
+- **Layered**: Connector → Domain → CLI. Use any layer directly
+- **Typed**: Saloon requests/responses, not string parsing
+- **Testable**: MockClient, Prism::fake(), Http::fake() — no real API calls in tests
